@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CriptoMestre - Ferramentas de Criptografia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background-color: #000;
+            color: #00ff41;
+            background-image: linear-gradient(rgba(0, 255, 65, 0.1) 1px, transparent 1px);
+            background-size: 100% 2px;
+            animation: flicker 0.15s infinite alternate;
+        }
+
+        @keyframes flicker {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.95; }
+        }
+
+        .themed-bg {
+            background-color: rgba(0, 15, 0, 0.6);
+            backdrop-filter: blur(5px);
+        }
+
+        .glow-border {
+            border: 1px solid rgba(0, 255, 65, 0.3);
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.2), inset 0 0 5px rgba(0, 255, 65, 0.1);
+        }
+
+        .themed-input, .themed-select {
+            background-color: rgba(0, 20, 0, 0.5);
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            transition: all 0.3s ease;
+            caret-color: #00ff41;
+        }
+        .themed-input:focus, .themed-select:focus {
+            outline: none;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
+            border-color: #00ff41;
+        }
+        .themed-input::placeholder {
+            color: rgba(0, 255, 65, 0.4);
+        }
+
+        .themed-button {
+            background-color: transparent;
+            border: 1px solid #00ff41;
+            color: #00ff41;
+            text-shadow: 0 0 5px #00ff41;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .themed-button:hover {
+            background-color: rgba(0, 255, 65, 0.1);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.7);
+        }
+        .themed-button.secondary {
+            border-color: rgba(0, 255, 65, 0.4);
+            color: rgba(0, 255, 65, 0.6);
+        }
+        .themed-button.secondary:hover {
+             background-color: rgba(0, 255, 65, 0.05);
+             box-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
+        }
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-full md:w-72 themed-bg p-6 flex-shrink-0 glow-border">
+            <h1 class="text-2xl font-bold text-white mb-2 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18v3c0 .6.4 1 1 1h4v-3h3v-3h2l4-4 3 3v-3h-3v-3h-3l-4 4h-3v3H2z"></path><path d="M8 16h3v3"></path><path d="M12 12h3v3"></path><path d="M14 10h3v3"></path><path d="M16 8h3v3"></path></svg>
+                CriptoMestre
+            </h1>
+            <p class="text-sm text-green-300 opacity-60 mb-6">Coleção de ferramentas de criptografia para aprendizado e experimentação.</p>
+            
+            <div>
+                <label for="cipher-select" class="block text-sm font-medium text-green-300 mb-2">// Selecione a Criptografia</label>
+                <select id="cipher-select" class="w-full themed-select rounded-none p-2.5">
+                    <option value="caesar">Cifra de César</option>
+                    <option value="vigenere">Cifra de Vigenère</option>
+                    <option value="base64">Base64</option>
+                    <option value="morse">Código Morse</option>
+                </select>
+            </div>
+
+            <footer class="mt-auto pt-6 text-center text-xs text-green-300 opacity-40 hidden md:block">
+                 <p>> Desenvolvido para fins educacionais.</p>
+                 <p>> status: online</p>
+            </footer>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 md:p-10 overflow-y-auto">
+            
+            <!-- Shared UI Elements -->
+            <div class="absolute top-4 right-4 text-xs opacity-50">CONEXÃO SEGURA ESTABELECIDA</div>
+
+            <!-- Cifra de César Page -->
+            <div id="page-caesar" class="cipher-page">
+                <h2 class="text-3xl font-bold text-white mb-4 animate-pulse">> Cifra de César</h2>
+                <div class="themed-bg glow-border p-6">
+                    <p class="text-green-300 opacity-80 mb-6 text-sm">// Uma das mais simples cifras de substituição. Cada letra é substituída por outra um número fixo de posições abaixo no alfabeto.</p>
+                    
+                    <div class="grid grid-cols-1 gap-6">
+                        <div class="relative">
+                            <textarea id="caesar-input" rows="4" class="w-full p-3 themed-input rounded-none pr-10" placeholder="> Digite o texto aqui..."></textarea>
+                        </div>
+                        <div>
+                            <label for="caesar-shift" class="block text-sm mb-1">> Deslocamento (Chave)</label>
+                            <input type="number" id="caesar-shift" value="3" class="w-24 px-3 py-2 themed-input rounded-none">
+                        </div>
+                        <div class="flex gap-4">
+                            <button onclick="handleCaesar('encrypt')" class="flex-1 themed-button py-2 px-4 rounded-none">Criptografar</button>
+                            <button onclick="handleCaesar('decrypt')" class="flex-1 themed-button secondary py-2 px-4 rounded-none">Descriptografar</button>
+                        </div>
+                        <div class="relative">
+                            <textarea id="caesar-output" rows="4" class="w-full p-3 themed-input rounded-none pr-10" readonly placeholder="> Resultado..."></textarea>
+                            <button onclick="copyToClipboard('caesar-output', this)" class="absolute top-2 right-2 p-2 text-green-300 opacity-50 hover:opacity-100 transition" title="Copiar"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zM-1 8a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3A.5.5 0 0 1-1 8z"/></svg></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other pages follow a similar structure -->
+            <div id="page-vigenere" class="cipher-page hidden"><!-- Content for Vigenère --></div>
+            <div id="page-base64" class="cipher-page hidden"><!-- Content for Base64 --></div>
+            <div id="page-morse" class="cipher-page hidden"><!-- Content for Morse --></div>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Clone Caesar structure for other ciphers to avoid repetition
+            const caesarPage = document.getElementById('page-caesar').innerHTML;
+
+            const vigenerePage = document.getElementById('page-vigenere');
+            vigenerePage.innerHTML = caesarPage.replace(/César/g, 'Vigenère').replace(/caesar/g, 'vigenere').replace(/> Deslocamento \(Chave\)/g, '> Palavra-chave');
+            vigenerePage.querySelector('#vigenere-shift').outerHTML = '<input type="text" id="vigenere-key" value="SECRET" class="px-3 py-2 themed-input rounded-none">';
+            vigenerePage.querySelector('p').textContent = '// Uma cifra de substituição polialfabética que usa uma palavra-chave para criptografar. Mais segura que a cifra de César.';
+
+            const base64Page = document.getElementById('page-base64');
+            base64Page.innerHTML = caesarPage.replace(/Cifra de César/g, 'Base64').replace(/caesar/g, 'base64').replace(/Criptografar/g, 'Codificar').replace(/Descriptografar/g, 'Decodificar');
+            base64Page.querySelector('div > label[for="base64-shift"]').parentElement.remove();
+            base64Page.querySelector('p').textContent = '// Um esquema de codificação para converter dados binários em texto ASCII. Não é criptografia, mas é amplamente utilizado na transmissão de dados.';
+
+            const morsePage = document.getElementById('page-morse');
+            morsePage.innerHTML = caesarPage.replace(/Cifra de César/g, 'Código Morse').replace(/caesar/g, 'morse').replace(/Criptografar/g, 'Para Morse').replace(/Descriptografar/g, 'De Morse');
+            morsePage.querySelector('div > label[for="morse-shift"]').parentElement.remove();
+            morsePage.querySelector('#morse-output').classList.add('font-mono');
+            morsePage.querySelector('p').textContent = '// Um método de transmissão de texto usando sequências de pontos e traços. Um sistema de codificação telegráfico clássico.';
+        });
+
+
+        const cipherSelect = document.getElementById('cipher-select');
+        cipherSelect.addEventListener('change', (e) => {
+            document.querySelectorAll('.cipher-page').forEach(page => {
+                page.classList.add('hidden');
+            });
+            document.getElementById(`page-${e.target.value}`).classList.remove('hidden');
+        });
+
+        function copyToClipboard(elementId, button) {
+            const text = document.getElementById(elementId).value;
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    const originalText = button.innerHTML;
+                    button.innerHTML = '<span class="text-xs">Copiado!</span>';
+                    setTimeout(() => { button.innerHTML = originalText; }, 2000);
+                });
+            }
+        }
+
+        // --- Cifra de César ---
+        function handleCaesar(action) {
+            const text = document.getElementById('caesar-input').value;
+            const shift = parseInt(document.getElementById('caesar-shift').value, 10);
+            const outputEl = document.getElementById('caesar-output');
+            let amount = action === 'encrypt' ? shift : (26 - shift) % 26;
+            outputEl.value = text.replace(/[a-zA-Z]/g, (char) => {
+                const code = char.charCodeAt(0);
+                let start = code < 97 ? 65 : 97;
+                return String.fromCharCode(((code - start + amount) % 26) + start);
+            });
+        }
+        
+        // --- Cifra de Vigenère ---
+        function handleVigenere(action) {
+            const text = document.getElementById('vigenere-input').value.toUpperCase();
+            const key = document.getElementById('vigenere-key').value.toUpperCase().replace(/[^A-Z]/g, '');
+            const outputEl = document.getElementById('vigenere-output');
+            if (!key) { outputEl.value = "> ERRO: Insira uma palavra-chave."; return; }
+            let result = '';
+            let keyIndex = 0;
+            for (let i = 0; i < text.length; i++) {
+                const charCode = text.charCodeAt(i);
+                if (charCode >= 65 && charCode <= 90) {
+                    const keyChar = key.charCodeAt(keyIndex % key.length) - 65;
+                    const shift = action === 'encrypt' ? keyChar : -keyChar;
+                    let newCode = ((charCode - 65 + shift + 26) % 26) + 65;
+                    result += String.fromCharCode(newCode);
+                    keyIndex++;
+                } else { result += text[i]; }
+            }
+            outputEl.value = result;
+        }
+
+        // --- Base64 ---
+        function handleBase64(action) {
+            const input = document.getElementById('base64-input').value;
+            const outputEl = document.getElementById('base64-output');
+            try {
+                outputEl.value = action === 'encrypt' ? btoa(input) : atob(input);
+            } catch (e) {
+                outputEl.value = '> ERRO: Entrada inválida para esta operação.';
+            }
+        }
+
+        // --- Código Morse ---
+        const morseCodeMap = {'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.','H':'....','I':'..','J':'.---','K':'-.-','L':'.-..','M':'--','N':'-.','O':'---','P':'.--.','Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-','V':'...-','W':'.--','X':'-..-','Y':'-.--','Z':'--..','1':'.----','2':'..---','3':'...--','4':'....-','5':'.....','6':'-....','7':'--...','8':'---..','9':'----.','0':'-----',' ':'/'};
+        const reverseMorseCodeMap = Object.fromEntries(Object.entries(morseCodeMap).map(([k, v]) => [v, k]));
+        function handleMorse(action) {
+            const input = document.getElementById('morse-input').value;
+            const outputEl = document.getElementById('morse-output');
+            if (action === 'encrypt') {
+                outputEl.value = input.toUpperCase().split('').map(char => morseCodeMap[char] || '').join(' ');
+            } else {
+                outputEl.value = input.split(' ').map(code => reverseMorseCodeMap[code] || '').join('');
+            }
+        }
+    </script>
+</body>
+</html>
+
